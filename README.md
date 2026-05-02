@@ -1,4 +1,4 @@
-# Floaterm
+# (fork of) Floaterm
 
 A beautiful toggleable floating window for managing terminal buffers within Neovim
 
