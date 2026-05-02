@@ -24,7 +24,6 @@ M.open = function()
   utils.gen_term_bufs()
   state.buf = state.buf or state.terminals[1].buf
 
-  ----------- calculate h,w
   state.h = math.floor(vim.o.lines * (conf.size.h / 100))
   state.w = math.floor(vim.o.columns * (conf.size.w / 100))
 

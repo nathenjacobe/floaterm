@@ -50,7 +50,6 @@ M.cycle_term_bufs = function(direction)
   local cur_index = utils.get_term_by_key(state.buf)
 
   if not cur_index then
-    -- If not in a terminal, switch to the first one
     utils.switch_buf(state.terminals[1].buf)
     return
   end
