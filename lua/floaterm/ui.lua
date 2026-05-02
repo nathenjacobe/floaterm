@@ -55,9 +55,6 @@ M.bar = function()
 
   local line = {
     { active_label, "xdarkbg" },
-    { "_pad_" },
-    { string.format("   %.1f MB ", bytes / (1024 * 1024)), "ExGreen" },
-    { "   " .. active_term.time, "ExRed" },
   }
   return {
     voltui.hpad(line, w),
