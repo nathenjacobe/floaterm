@@ -22,7 +22,7 @@ M.items = function()
   for i, v in ipairs(state.terminals) do
     local icon = "" .. "  "
     local label = icon .. (v.name or "Terminal")
-    local hl = state.buf == v.buf and "Comment" or "ExGreen"
+    local hl = state.buf == v.buf and "xdarkbg" or "ExGreen"
     local actions = {
       click = function()
         utils.switch_buf(v.buf)
