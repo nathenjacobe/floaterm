@@ -28,15 +28,20 @@ end
 M.add_keymap = function(key, buf)
   map("n", tostring(key), function()
     M.switch_buf(buf)
-  end, { buffer = state.sidebuf })
+  end, { buffer = state.sidebuf, silent = true, nowait = true })
+end
+
+M.regenerate_keymaps = function()
+  for i, term in ipairs(state.terminals) do
+    M.add_keymap(i, term.buf)
+  end
 end
 
 M.gen_term_bufs = function()
   for i, _ in ipairs(state.terminals) do
     state.terminals[i] = vim.tbl_extend("force", M.new_term(), state.terminals[i])
-    local buf = state.terminals[i].buf
-    M.add_keymap(i, buf)
   end
+  M.regenerate_keymaps()
 end
 
 M.set_termwin_hl = function()
@@ -119,7 +124,7 @@ M.get_buf_on_cursor = function()
   local row = vim.api.nvim_win_get_cursor(0)[1]
 
   if not state.terminals[row] then
-    vim.notify("place cursor on the terminal name", vim.log.levels.WARN)
+    -- vim.notify("place cursor on the terminal name", vim.log.levels.WARN)
     return
   end
 

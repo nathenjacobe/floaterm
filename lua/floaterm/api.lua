@@ -4,13 +4,15 @@ local volt_redraw = require("volt").redraw
 local M = {}
 
 M.edit_name = function()
-  local row = utils.get_buf_on_cursor()
+  local row = state.sidebar_focus_idx or utils.get_buf_on_cursor()
 
   if row then
     vim.ui.input({ prompt = "   Enter name: " }, function(input)
-      state.terminals[row].name = input
-      vim.api.nvim_echo({}, false, {})
-      volt_redraw(state.sidebuf, "bufs")
+      if input and #input > 0 then
+        state.terminals[row].name = input
+        vim.api.nvim_echo({}, false, {})
+        volt_redraw(state.sidebuf, "bufs")
+      end
     end)
   end
 end
@@ -18,28 +20,51 @@ end
 M.new_term = function(opts)
   opts = opts or {}
 
+  local function create_and_insert_term(term_opts)
+    local details = utils.new_term(term_opts)
+    local insert_at = (state.sidebar_focus_idx and state.sidebar_focus_idx + 1) or (#state.terminals + 1)
+    table.insert(state.terminals, insert_at, details)
+    utils.regenerate_keymaps()
+    volt_redraw(state.sidebuf, "all")
+
+    if not term_opts.hidden then
+      utils.switch_buf(details.buf)
+    end
+  end
+
   if opts.name == "auto" then
     vim.ui.input({ prompt = "   Enter name: " }, function(input)
       opts.name = input
       vim.api.nvim_echo({}, false, {})
+      create_and_insert_term(opts)
     end)
+  else
+    create_and_insert_term(opts)
   end
-
-  local details = utils.new_term(opts)
-  table.insert(state.terminals, details)
-
-  if not opts.hidden then
-    utils.switch_buf(details.buf)
-  end
-
-  utils.add_keymap(#state.terminals, details.buf)
 end
 
 M.switch_wins = function()
   local curwin = vim.api.nvim_get_current_win()
+  local newwin_name
 
-  local newwin = curwin == state.win and "sidewin" or "win"
-  vim.api.nvim_set_current_win(state[newwin])
+  if curwin == state.win then
+    newwin_name = "sidewin"
+  elseif curwin == state.sidewin then
+    newwin_name = "win"
+  end
+
+  if newwin_name == "sidewin" then
+    local cur_index = utils.get_term_by_key(state.buf)
+    state.sidebar_focus_idx = cur_index and cur_index[1] or 1
+    volt_redraw(state.sidebuf, "bufs")
+  elseif newwin_name == "win" then
+    state.sidebar_focus_idx = nil
+    volt_redraw(state.sidebuf, "bufs")
+  end
+
+  if newwin_name then
+    vim.api.nvim_set_current_win(state[newwin_name])
+  end
 end
 
 M.cycle_term_bufs = function(direction)
@@ -62,7 +87,7 @@ M.delete_term = function(buf)
   local method = buf and "automatic" or "manual"
 
   if not buf then
-    local i = utils.get_buf_on_cursor()
+    local i = state.sidebar_focus_idx or utils.get_buf_on_cursor()
     if i then
       buf = state.terminals[i].buf
     end
@@ -73,6 +98,7 @@ M.delete_term = function(buf)
     local newbuf_i = (index == 1 and index + 1) or index - 1
 
     table.remove(state.terminals, index)
+    utils.regenerate_keymaps()
 
     if #state.terminals == 0 then
       M.new_term()

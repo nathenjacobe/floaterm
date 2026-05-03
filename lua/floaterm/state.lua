@@ -3,6 +3,7 @@ local M = {
   terminals = nil,
   bar_redraw_timeout = 10000,
   prev_win_focussed = 0,
+  sidebar_focus_idx = nil,
 
   config = {
     border = false,
