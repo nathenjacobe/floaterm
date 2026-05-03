@@ -38,7 +38,7 @@ M.items = function()
       end,
     }
     local line = { { label, hl, actions }, { "_pad_" }, { num_icons[i] or tostring(i), hl } }
-    table.insert(lines, voltui.hpad(line, 18))
+    table.insert(lines, voltui.hpad(line, 23))
   end
 
   -- 2 cuz 2 lines for help keymaps
