@@ -91,7 +91,7 @@ M.open = function()
   if bordered then
     vim.wo[state.barwin].winhl = "Normal:normal,floatBorder:exred"
   else
-    vim.wo[state.barwin].winhl = "Normal:exdarkbg,floatBorder:exdarkborder"
+    vim.wo[state.barwin].winhl = "Normal:exdarkbg,floatBorder:xdarkbg"
   end
 
   api.nvim_set_hl(state.ns, "floatBorder", { link = bordered and "comment" or "exblack2border" })
