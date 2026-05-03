@@ -9,6 +9,7 @@ local M = {
     border = false,
     autoinsert = true,
     size = { h = 30, w = 70 },
+    persistence = true,
 
     -- { row , col } or fn() returning the table
     position = nil,

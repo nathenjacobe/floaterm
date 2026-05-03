@@ -38,8 +38,10 @@ M.regenerate_keymaps = function()
 end
 
 M.gen_term_bufs = function()
-  for i, _ in ipairs(state.terminals) do
-    state.terminals[i] = vim.tbl_extend("force", M.new_term(), state.terminals[i])
+  for i, v in ipairs(state.terminals) do
+    if not v.buf or not api.nvim_buf_is_valid(v.buf) then
+      state.terminals[i] = vim.tbl_extend("force", M.new_term(), state.terminals[i])
+    end
   end
   M.regenerate_keymaps()
 end
@@ -92,7 +94,9 @@ M.switch_buf = function(buf)
       after_close = function()
         M.close_timers()
         state.volt_set = false
-        state.terminals = nil
+        if not state.config.persistence then
+          state.terminals = nil
+        end
         state.buf = nil
         state.sidebuf = nil
         state.barbuf = nil

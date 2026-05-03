@@ -21,11 +21,13 @@ M.items = function()
 
   for i, v in ipairs(state.terminals) do
     local icon = "" .. "  "
-    local label = icon .. (v.name or "Terminal")
-    local hl
+    local prefix = "  "
     if state.sidebar_focus_idx and i == state.sidebar_focus_idx then
-      hl = "Visual"
-    elseif state.buf == v.buf then
+      prefix = "> "
+    end
+    local label = prefix .. icon .. (v.name or "Terminal")
+    local hl
+    if state.buf == v.buf then
       hl = "xdarkbg"
     else
       hl = "ExGreen"
@@ -43,7 +45,7 @@ M.items = function()
   local empty_lines_to_fill = state.h - #lines - 2
 
   for _ = 1, empty_lines_to_fill, 1 do
-    table.insert(lines, { })
+    table.insert(lines, {})
   end
 
   table.insert(lines, voltui.separator("-", 18))

@@ -143,6 +143,7 @@ end
 
 M.toggle = function()
   if state.volt_set then
+    api.nvim_del_augroup_by_name "FloatermAu"
     api.nvim_win_close(state.win, false)
     api.nvim_win_close(state.barwin, false)
     api.nvim_win_close(state.sidewin, false)
