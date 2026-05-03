@@ -23,16 +23,14 @@ local function sidebar_select()
   local term = state.terminals[state.sidebar_focus_idx]
   if term then
     utils.switch_buf(term.buf)
-    -- and switch back to the terminal window
-    api.switch_wins() -- this should work if we are in sidewin
+    -- we are now in the terminal window, unfocus the sidebar
+    state.sidebar_focus_idx = nil
+    volt_redraw(state.sidebuf, "bufs")
   end
 end
 
 return function()
-  map("n", "e", api.edit_name, { buffer = state.sidebuf, silent = true })
-  map("n", "a", function()
-    api.new_term { name = "auto" }
-  end, { buffer = state.sidebuf, silent = true })
+  map("n", "a", api.new_term, { buffer = state.sidebuf, silent = true })
   map("n", "d", api.delete_term, { buffer = state.sidebuf, silent = true })
   map("n", "<C-l>", api.switch_wins, { buffer = state.sidebuf, silent = true })
 

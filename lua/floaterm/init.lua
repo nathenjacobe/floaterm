@@ -8,6 +8,21 @@ local layout = require "floaterm.layout"
 
 M.setup = function(opts)
   state.config = vim.tbl_deep_extend("force", state.config, opts or {})
+
+  local project_config_path = vim.fn.getcwd() .. "/floaterm.lua"
+  if not state.project_config_loaded and vim.fn.filereadable(project_config_path) == 1 then
+    local ok, project_terminals = pcall(dofile, project_config_path)
+    if ok and type(project_terminals) == "table" then
+      state.terminals = state.terminals or {}
+      for _, term_opts in ipairs(project_terminals) do
+        local details = require("floaterm.utils").new_term(term_opts)
+        table.insert(state.terminals, details)
+      end
+    else
+      vim.notify("floaterm: Error loading " .. project_config_path, vim.log.levels.ERROR)
+    end
+    state.project_config_loaded = true
+  end
 end
 
 M.open = function()

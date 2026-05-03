@@ -16,13 +16,21 @@ M.convert_buf2term = function(cmd)
 end
 
 M.new_term = function(opts)
+  opts = opts or {}
   local defaults = {
     buf = api.nvim_create_buf(false, true),
-    time = os.date "%H:%M",
+    time = os.date("%H:%M"),
     name = "Terminal",
   }
 
-  return vim.tbl_extend("force", defaults, opts or {})
+  if opts.cmd then
+    local first_cmd = opts.cmd:match("^%s*([%a_][-%w_]*)")
+    if first_cmd then
+      opts.name = first_cmd
+    end
+  end
+
+  return vim.tbl_extend("force", defaults, opts)
 end
 
 M.add_keymap = function(key, buf)

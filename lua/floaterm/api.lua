@@ -3,46 +3,20 @@ local utils = require "floaterm.utils"
 local volt_redraw = require("volt").redraw
 local M = {}
 
-M.edit_name = function()
-  local row = state.sidebar_focus_idx or utils.get_buf_on_cursor()
-
-  if row then
-    vim.ui.input({ prompt = "   Enter name: " }, function(input)
-      if input and #input > 0 then
-        state.terminals[row].name = input
-        vim.api.nvim_echo({}, false, {})
-        volt_redraw(state.sidebuf, "bufs")
-      end
-    end)
-  end
-end
-
 M.new_term = function(opts)
   opts = opts or {}
 
-  local function create_and_insert_term(term_opts)
-    local details = utils.new_term(term_opts)
-    local insert_at = (state.sidebar_focus_idx and state.sidebar_focus_idx + 1) or (#state.terminals + 1)
-    table.insert(state.terminals, insert_at, details)
-    utils.regenerate_keymaps()
+  local details = utils.new_term(opts)
+  local insert_at = (state.sidebar_focus_idx and state.sidebar_focus_idx + 1) or (#state.terminals + 1)
+  table.insert(state.terminals, insert_at, details)
+  utils.regenerate_keymaps()
 
-    if not term_opts.hidden then
-      utils.switch_buf(details.buf)
-      state.sidebar_focus_idx = insert_at
-    end
-
-    volt_redraw(state.sidebuf, "all")
+  if not opts.hidden then
+    utils.switch_buf(details.buf)
+    state.sidebar_focus_idx = insert_at
   end
 
-  if opts.name == "auto" then
-    vim.ui.input({ prompt = "   Enter name: " }, function(input)
-      opts.name = input
-      vim.api.nvim_echo({}, false, {})
-      create_and_insert_term(opts)
-    end)
-  else
-    create_and_insert_term(opts)
-  end
+  volt_redraw(state.sidebuf, "all")
 end
 
 M.switch_wins = function()
@@ -59,6 +33,9 @@ M.switch_wins = function()
     local cur_index = utils.get_term_by_key(state.buf)
     state.sidebar_focus_idx = cur_index and cur_index[1] or 1
     volt_redraw(state.sidebuf, "bufs")
+    if cur_index then
+      vim.api.nvim_win_set_cursor(state.sidewin, { cur_index[1], 0 })
+    end
   elseif newwin_name == "win" then
     state.sidebar_focus_idx = nil
     volt_redraw(state.sidebuf, "bufs")
