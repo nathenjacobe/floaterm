@@ -45,7 +45,7 @@ M.open = function()
   state.h = math.floor(vim.o.lines * (conf.size.h / 100))
   state.w = math.floor(vim.o.columns * (conf.size.w / 100))
 
-  local sidebar_w = 30
+  local sidebar_w = 25
 
   if conf.position then 
      conf.position = type(conf.position) == 'table' and conf.position or conf.position()

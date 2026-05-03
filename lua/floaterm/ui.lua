@@ -48,7 +48,7 @@ M.items = function()
     table.insert(lines, {})
   end
 
-  table.insert(lines, voltui.separator("-", 18))
+  table.insert(lines, voltui.separator("-", 23))
   table.insert(lines, { { "a - add", "comment" } })
 
   return lines
