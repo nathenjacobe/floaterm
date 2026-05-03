@@ -82,7 +82,7 @@ M.open = function()
     height = 1,
     relative = "win",
     style = "minimal",
-    border = "single",
+    border = colored_border,
     zindex = 100,
   }
 
