@@ -105,41 +105,21 @@ M.send_cmd = function(opts)
   if not state.terminals then
     require("floaterm").open()
     require("floaterm.api").new_term(opts)
-    return
-  end
-
-  opts.cmd = type(opts.cmd) == "string" and opts.cmd or opts.cmd()
-  opts.buf = opts.buf or state.buf
-
-  local term_info
-  if opts.name then
-    term_info = utils.get_term_by_key(opts.name, "name")
   else
-    term_info = utils.get_term_by_key(opts.buf)
-  end
+    opts.cmd = type(opts.cmd) == "string" and opts.cmd or opts.cmd()
+    opts.buf = opts.buf or state.buf
+    local bufdetails = utils.get_term_by_key(opts.buf)[2]
 
-  if not term_info then
-    vim.notify("Floaterm: could not find terminal to send command", vim.log.levels.ERROR)
-    return
-  end
-  local bufdetails = term_info[2]
+    if opts.name then
+      bufdetails = utils.get_term_by_key(opts.name, "name")[2]
+    end
 
-  local first_cmd = opts.cmd:match("^%s*([%a_][-%w_]*)")
-  if first_cmd then
-    bufdetails.name = first_cmd
-    volt_redraw(state.sidebuf, "bufs")
+    local job_id = vim.b[bufdetails.buf].terminal_job_id
+    vim.api.nvim_chan_send(job_id, opts.cmd .. " \n")
+    vim.api.nvim_buf_call(bufdetails.buf, function()
+      vim.cmd [[normal G]]
+    end)
   end
-
-  if not vim.b[bufdetails.buf] or not vim.b[bufdetails.buf].terminal_job_id then
-    vim.notify("Floaterm: terminal process not running for buffer " .. bufdetails.buf, vim.log.levels.WARN)
-    utils.switch_buf(bufdetails.buf)
-  end
-
-  local job_id = vim.b[bufdetails.buf].terminal_job_id
-  vim.api.nvim_chan_send(job_id, opts.cmd .. " \n")
-  vim.api.nvim_buf_call(bufdetails.buf, function()
-    vim.cmd [[normal G]]
-  end)
 end
 
 return M

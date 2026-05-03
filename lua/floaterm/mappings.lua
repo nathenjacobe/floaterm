@@ -30,15 +30,7 @@ local function sidebar_select()
 end
 
 return function()
-  map("n", "a", function()
-    vim.ui.input({ prompt = "Enter command: " }, function(cmd)
-      if cmd and #cmd > 0 then
-        api.new_term({ cmd = cmd })
-      else
-        api.new_term() -- no command, plain shell
-      end
-    end)
-  end, { buffer = state.sidebuf, silent = true })
+  map("n", "a", api.new_term, { buffer = state.sidebuf, silent = true })
   map("n", "d", api.delete_term, { buffer = state.sidebuf, silent = true })
   map("n", "<C-l>", api.switch_wins, { buffer = state.sidebuf, silent = true })
 

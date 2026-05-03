@@ -49,7 +49,7 @@ M.items = function()
   end
 
   table.insert(lines, voltui.separator("-", 18))
-  table.insert(lines, { { "a - add", "comment" }, { "  e - edit", "comment" } })
+  table.insert(lines, { { "a - add", "comment" } })
 
   return lines
 end
