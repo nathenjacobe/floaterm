@@ -65,9 +65,6 @@ end
 M.switch_buf = function(buf)
   state.buf = buf
 
-  volt_redraw(state.sidebuf, "bufs")
-  volt_redraw(state.barbuf, "bar")
-
   if not api.nvim_win_is_valid(state.win) then
     state.win = api.nvim_open_win(state.buf, true, state.term_win_opts)
     M.set_termwin_hl()
@@ -76,13 +73,16 @@ M.switch_buf = function(buf)
   api.nvim_set_current_win(state.win)
   api.nvim_set_current_buf(buf)
 
+  volt_redraw(state.sidebuf, "bufs")
+  volt_redraw(state.barbuf, "bar")
+
   local details = vim.tbl_filter(function(x)
     return x.buf == buf
   end, state.terminals)
 
   if vim.bo[buf].buftype ~= "terminal" then
     vim.bo[buf].ft = "Floaterm"
-    M.convert_buf2term(details[1].cmd)
+    M.convert_buf2term(details[1] and details[1].cmd)
     volt_redraw(state.barbuf, "bar")
 
     map({ "t", "n" }, "<C-h>", function()
