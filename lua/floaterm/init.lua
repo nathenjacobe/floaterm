@@ -82,14 +82,14 @@ M.open = function()
     height = 1,
     relative = "win",
     style = "minimal",
-    border = colored_border,
+    border = "single",
     zindex = 100,
   }
 
   state.barwin = api.nvim_open_win(state.barbuf, false, bar_win_opts)
 
   if bordered then
-    vim.wo[state.barwin].winhl = "Normal:normal,floatBorder:exred"
+    vim.wo[state.barwin].winhl = "Normal:normal,floatBorder:xdarkbg"
   else
     vim.wo[state.barwin].winhl = "Normal:exdarkbg,floatBorder:exdarkborder"
   end
