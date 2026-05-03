@@ -94,8 +94,8 @@ M.open = function()
     vim.wo[state.barwin].winhl = "Normal:exdarkbg,floatBorder:exdarkborder"
   end
 
-  api.nvim_set_hl(state.ns, "floatBorder", { "xdarkbg" })
-  api.nvim_set_hl(state.ns, "Normal", { "xdarkbg" })
+  api.nvim_set_hl(state.ns, "floatBorder", { link = "xdarkbg" })
+  api.nvim_set_hl(state.ns, "Normal", { link = "xdarkbg" })
 
   volt.gen_data {
     { buf = state.sidebuf, ns = state.ns, layout = layout.sidebar, xpad = 1 },
