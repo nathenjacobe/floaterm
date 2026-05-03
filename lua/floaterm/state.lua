@@ -4,6 +4,7 @@ local M = {
   bar_redraw_timeout = 10000,
   prev_win_focussed = 0,
   sidebar_focus_idx = nil,
+  is_toggling = false,
 
   config = {
     border = false,

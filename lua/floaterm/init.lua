@@ -30,7 +30,7 @@ M.open = function()
   state.h = math.floor(vim.o.lines * (conf.size.h / 100))
   state.w = math.floor(vim.o.columns * (conf.size.w / 100))
 
-  local sidebar_w = 30
+  local sidebar_w = 20
 
   if conf.position then 
      conf.position = type(conf.position) == 'table' and conf.position or conf.position()
@@ -136,7 +136,7 @@ M.open = function()
     group = api.nvim_create_augroup("FloatermAu", { clear = true }),
     callback = function(args)
       vim.schedule(function()
-        if state.volt_set and utils.get_term_by_key(args.buf) then
+        if state.volt_set and not state.is_toggling and utils.get_term_by_key(args.buf) then
           require("floaterm.api").delete_term(args.buf)
         end
       end)
@@ -146,6 +146,7 @@ end
 
 M.toggle = function()
   if state.volt_set then
+    state.is_toggling = true
     api.nvim_del_augroup_by_name "FloatermAu"
     api.nvim_win_close(state.win, false)
     api.nvim_win_close(state.barwin, false)
@@ -153,6 +154,7 @@ M.toggle = function()
     utils.close_timers()
     state.volt_set = false
     api.nvim_set_current_win(state.prev_win_focussed)
+    state.is_toggling = false
   else
     M.open()
   end
