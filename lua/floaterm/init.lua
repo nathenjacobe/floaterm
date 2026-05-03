@@ -91,11 +91,11 @@ M.open = function()
   if bordered then
     vim.wo[state.barwin].winhl = "Normal:normal,floatBorder:exred"
   else
-    vim.wo[state.barwin].winhl = "Normal:exdarkbg,floatBorder:xdarkbg"
+    vim.wo[state.barwin].winhl = "Normal:exdarkbg,floatBorder:exdarkborder"
   end
 
-  api.nvim_set_hl(state.ns, "floatBorder", { link = bordered and "comment" or "exblack2border" })
-  api.nvim_set_hl(state.ns, "Normal", { link = bordered and "normal" or "exblack2bg" })
+  api.nvim_set_hl(state.ns, "floatBorder", { "xdarkbg" })
+  api.nvim_set_hl(state.ns, "Normal", { "xdarkbg" })
 
   volt.gen_data {
     { buf = state.sidebuf, ns = state.ns, layout = layout.sidebar, xpad = 1 },
