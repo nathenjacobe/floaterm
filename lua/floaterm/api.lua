@@ -25,11 +25,13 @@ M.new_term = function(opts)
     local insert_at = (state.sidebar_focus_idx and state.sidebar_focus_idx + 1) or (#state.terminals + 1)
     table.insert(state.terminals, insert_at, details)
     utils.regenerate_keymaps()
-    volt_redraw(state.sidebuf, "all")
 
     if not term_opts.hidden then
       utils.switch_buf(details.buf)
+      state.sidebar_focus_idx = insert_at
     end
+
+    volt_redraw(state.sidebuf, "all")
   end
 
   if opts.name == "auto" then

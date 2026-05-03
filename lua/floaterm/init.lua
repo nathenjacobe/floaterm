@@ -22,12 +22,15 @@ M.open = function()
   state.terminals = state.terminals or vim.tbl_deep_extend("force", {}, usr_terms)
 
   utils.gen_term_bufs()
-  state.buf = state.buf or state.terminals[1].buf
+  if state.buf and not api.nvim_buf_is_valid(state.buf) then
+    state.buf = nil
+  end
+  state.buf = state.buf or (state.terminals[1] and state.terminals[1].buf)
 
   state.h = math.floor(vim.o.lines * (conf.size.h / 100))
   state.w = math.floor(vim.o.columns * (conf.size.w / 100))
 
-  local sidebar_w = 20
+  local sidebar_w = 30
 
   if conf.position then 
      conf.position = type(conf.position) == 'table' and conf.position or conf.position()

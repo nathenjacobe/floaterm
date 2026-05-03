@@ -60,7 +60,11 @@ M.bar = function()
   local active_term = utils.get_term_by_key(state.buf)[2]
   local active_label = "  " .. active_term.name
 
-  local bytes = vim.api.nvim_buf_get_offset(state.buf, vim.api.nvim_buf_line_count(state.buf)) - 1
+  local ok, lines = pcall(vim.api.nvim_buf_line_count, state.buf)
+  if not ok then
+    lines = 0
+  end
+  local bytes = vim.api.nvim_buf_get_offset(state.buf, lines) - 1
 
   local line = {
     { active_label, "xdarkbg" },
